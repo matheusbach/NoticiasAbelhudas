@@ -78,7 +78,7 @@ namespace NoticiasAbelhudas     // Notícias sendo publicadas em https://t.me/No
 					catch (Exception e) { Console.WriteLine("ERROR: " + e.Message); }
 				});
 
-				Thread.Sleep(18000000); // aguarda meia hora entre cada checagem por notícias
+				Thread.Sleep(1800000); // aguarda meia hora entre cada checagem por notícias
 			}
 		}
 	}
