@@ -1,7 +1,7 @@
 ﻿version: '3'
 
 services:
-  tilapiabot:
+  noticiasabelhudas:
     image: mcr.microsoft.com/dotnet/sdk:6.0
     volumes: 
       - .:/dotnet-app
