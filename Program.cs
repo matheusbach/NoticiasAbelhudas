@@ -53,7 +53,7 @@ namespace NoticiasAbelhudas     // Notícias sendo publicadas em https://t.me/No
 				{
 					try
 					{
-						if (db.Table<RssPost>().Where(row => row.InternalID.Equals(rss.InternalID)).CountAsync().Result == 0)                                   // Verifica para caso não exista um Post igual já salvo na Database, pois só queremos processar Rss novos
+						string realDetectedTitle = rss.Title.Replace(" | ", " - ").Split(" - ").Where(split => !split.Contains(".com") && !split.Contains(".gov")).OrderByDescending(split => split.Length).OrderByDescending(split => { return Settings.RssSearchList.Any(term => term.Split(' ').Where(term => !term.StartsWith('-')).Any(word => split.Contains(word))) ? 1 : 0; }).First(); // tenta determinar com base em heurísticas qual parte da frase representa o título real da notícia
 
 						if (db.Table<RssPost>().Where(row => row.InternalID.Equals(rss.InternalID)).CountAsync().Result == 0 && db.Table<RssPost>().Where(row => row.Title.Contains(realDetectedTitle)).CountAsync().Result == 0)	// Verifica para caso não exista um Post igual já salvo na Database, pois só queremos processar Rss novos
 						{
@@ -62,6 +62,7 @@ namespace NoticiasAbelhudas     // Notícias sendo publicadas em https://t.me/No
 							string[] rssTitleSplit = rss.Title.Replace(" | ", " - ").Split(" - ");                                                              // Quebra o título em pedaços, pois a última parte geralmente é o nome do portal de notícias
 
 							StringBuilder post = new();     // faz uma mensagem para mandar no telegram
+							post.AppendLine('*' + realDetectedTitle.EscapeMD2() + '*');
 							post.AppendLine();
 							post.AppendLine("Fonte: [" + (rssTitleSplit.Count() > 1 ? rssTitleSplit.Last().EscapeMD2() : rss.FeedUrl.EscapeMD2()) + "](" + rss.FeedUrl.EscapeMD2() + ")");
 
